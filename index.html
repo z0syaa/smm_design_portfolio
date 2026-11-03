@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зоя — Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #111111;
+            color: #f4f4f4;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- ШАПКА --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 40px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        header a {
+            color: #111;
+            text-decoration: none;
+            margin-left: 30px;
+            transition: opacity 0.4s;
+        }
+
+        header a:hover {
+            opacity: 0.5;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* --- ГЛАВНЫЙ ЭКРАН --- */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            position: relative;
+            background-color: #111;
+        }
+
+        .bg-text {
+            position: absolute;
+            top: 24%;
+            left: -20px;
+            font-size: 18vw;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.15);
+            white-space: nowrap;
+            z-index: 50;
+            pointer-events: none;
+            letter-spacing: -0.1em;
+            line-height: 0.8;
+            text-transform: uppercase;
+        }
+
+        .hero-left {
+            position: relative;
+            z-index: 10;
+            padding: 120px 40px 200px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .email {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: bold;
+            font-style: italic;
+            color: #7c7a7a;
+            display: block;
+            text-decoration: none;
+        }
+
+        .content-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: absolute;
+            left: 46%;
+            top: 52%;
+        }
+
+        .small-portfolio {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #f4f4f4;
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+        }
+
+        .bio {
+            max-width: 420px;
+            font-size: clamp(0.9rem, 1.1vw, 1rem);
+            line-height: 1.5;
+            color: #e0e0e0;
+        }
+
+        .bio p {
+            margin-bottom: 10px;
+        }
+
+        .hero-right {
+            position: relative;
+            z-index: 20;
+            height: 100%;
+            background-color: #e0e0e0;
+        }
+
+        .hero-right img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #111;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            z-index: 30;
+        }
+
+        /* --- СЕКЦИЯ С ЛЕТАЮЩИМИ РАБОТАМИ --- */
+        .floating-section {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            background-color: #111;
+        }
+
+        .section-head {
+            position: absolute;
+            top: 90px;
+            left: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .section-hint {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #7c7a7a;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            pointer-events: none;
+        }
+
+        .float-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .float-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            cursor: pointer;
+            background-color: #222;
+            will-change: transform;
+        }
+
+        .float-item video {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .float-item img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .float-item:hover img {
+            transform: scale(1.06);
+        }
+
+        /* --- РАСКРЫВАЮЩИЙСЯ ПРОСМОТР --- */
+        .preview {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.4s ease;
+            pointer-events: none;
+        }
+
+        .preview.open {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .preview-box {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            pointer-events: none;
+        }
+
+        .preview.open .preview-box {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .preview-viewport {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-slider {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .preview-slider img,
+        .preview-slider video {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-stage {
+            position: relative;
+        }
+
+        .preview-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(244, 244, 244, 0.12);
+            color: #fff;
+            font-size: 26px;
+            line-height: 44px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .preview-nav.prev {
+            left: -60px;
+        }
+
+        .preview-nav.next {
+            right: -60px;
+        }
+
+        .preview-caption {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 14px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #f4f4f4;
+        }
+
+        .preview-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .preview-sub {
+            color: #7c7a7a;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+                font-size: 12px;
+            }
+
+            header a {
+                margin-left: 16px;
+            }
+
+            .logo {
+                font-size: 14px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .hero-right {
+                order: -1;
+                height: 60vh;
+            }
+
+            .hero-left {
+                padding: 90px 20px 60px;
+                height: auto;
+                gap: 40px;
+            }
+
+            .bg-text {
+                top: 35%;
+                font-size: 24vw;
+                left: -10px;
+            }
+
+            .email {
+                font-size: 1.6rem;
+            }
+
+            .content-bottom {
+                position: static;
+                gap: 16px;
+            }
+
+            .small-portfolio {
+                font-size: 2.8rem;
+            }
+
+            .bio {
+                max-width: none;
+                font-size: 0.95rem;
+            }
+
+            .photo-caption {
+                font-size: 9px;
+            }
+
+            .section-head {
+                left: 20px;
+                right: 20px;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .preview-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+                line-height: 36px;
+            }
+
+            .preview-nav.prev {
+                left: 8px;
+            }
+
+            .preview-nav.next {
+                right: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Zoya Zaverina</div>
+        <nav>
+            <a href="https://drive.google.com/file/d/10ZgAqkXoMnlL0SZtG2SOpFCYgtgoLxMJ/view?usp=sharing" target="_blank">Резюме</a>
+            <a href="https://www.behance.net/gallery/253006229/Chess-club-identity" target="_blank">Портфолио</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="info">
+
+        <!-- 1. ОГРОМНОЕ СЛОВО ПОВЕРХ ФОТО -->
+        <div class="bg-text">PORTFOLIO</div>
+
+        <!-- 2. ЛЕВАЯ ЧАСТЬ -->
+        <div class="hero-left">
+            <a class="email" href="https://t.me/zoykina_telega" target="_blank">@zoykina_telega</a>
+
+            <div class="content-bottom">
+                <div class="small-portfolio">PORTFOLIO</div>
+
+                <div class="bio">
+                    <p>Привет! Меня зовут Зоя, я графический дизайнер. Занимала позицию коммуникационного дизайнера у 2people.it, потом устроилась в маленькое СММ агентство</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ПРАВАЯ ЧАСТЬ С ФОТО -->
+        <div class="hero-right">
+            <img src="images/profile.png" alt="Portrait">
+            <div class="photo-caption">Zoya Zaverina — 2026</div>
+        </div>
+
+    </section>
+
+    <section class="floating-section" id="works">
+        <div class="section-head">
+            <div class="section-title">Посты//рилсы//обложки</div>
+            <div class="section-hint">кликай на пост</div>
+        </div>
+        <div class="float-layer"></div>
+    </section>
+
+    <div class="preview">
+        <div class="preview-box">
+            <div class="preview-stage">
+                <div class="preview-viewport">
+                    <div class="preview-slider"></div>
+                </div>
+                <button class="preview-nav prev">‹</button>
+                <button class="preview-nav next">›</button>
+            </div>
+            <div class="preview-caption">
+                <div class="preview-info">
+                    <span class="preview-title"></span>
+                    <span class="preview-sub"></span>
+                </div>
+                <span class="preview-counter"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const projects = [
+                { title: 'Тревел-агентство', base: 'images/8.09.', ext: '.png', start: 1, count: 6, ratio: 0.75 },
+                { title: 'Ивент-компания', base: 'images/5.09.', ext: '.png', start: 1, count: 7, ratio: 0.75 },
+                { title: 'Школа флористики', base: 'images/5.08.', ext: '.png', start: 1, count: 6, ratio: 0.75 },
+                { title: 'Бренд косметики', base: 'images/4.09.', ext: '.png', start: 1, count: 7, ratio: 0.75 },
+                { title: 'Ивент-компания', base: 'images/11.09.', ext: '.png', start: 1, count: 13, ratio: 0.75 },
+                { title: 'TRAVEL DEALER', base: 'images/02.07.', ext: '.png', start: 1, count: 9, ratio: 0.75 },
+                { title: 'TRAVEL DEALER', base: 'images/23.06.', ext: '.png', start: 1, count: 13, ratio: 0.75, video: [9,11,12] },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/31.08.', ext: '.png', start: 1, count: 4, ratio: 0.5625 },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/2.', ext: '.png', start: 1, count: 6, ratio: 0.5625 },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/22.09.', ext: '.png', start: 1, count: 3, ratio: 0.5625 },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/Rink.', ext: '.png', start: 1, count: 5, ratio: 0.5625, video: [2] },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/9.10.', ext: '.png', start: 1, count: 3, ratio: 0.5625, video: [2] },
+                { title: 'Салон красоты', sub: 'серия сторис', base: 'images/26.09.', ext: '.png', start: 1, count: 3, ratio: 0.5625, video: [2] },
+                { title: 'Школа флористики', base: 'images/0812.', ext: '.png', start: 1, count: 9, ratio: 0.8, video: [2, 4, 5, 7, 8, 9] },
+                { title: 'Villeroy&Boch', sub: 'Рилсы', files: ['images/Пергамон.mp4', 'images/Цвет.MP4'], count: 2, ratio: 0.5625 },
+                { title: 'Villeroy&Boch', sub: 'Посты', files: ['images/ск1.jpeg', 'images/ск2.mp4', 'images/ск3.mp4'], count: 3, ratio: 0.8 },
+                { title: 'Villeroy&Boch', sub: 'Посты', files: ['images/т1.jpeg', 'images/т2.jpeg'], count: 2, ratio: 0.8 },
+                { title: 'Villeroy&Boch', sub: 'Посты', files: ['images/мк1.jpeg', 'images/мк2.png', 'images/мк3.jpeg'], count: 3, ratio: 0.8 },
+                { title: '2People.media', sub: 'Я придумывала шутки...', files: ['images/рилсы/гослинг1.png', 'images/рилсы/гослинг2.mp4', 'images/рилсы/гослинг3.png'], count: 3, ratio: 0.5625 },
+                { title: '2People.media', sub: 'Я придумывала шутки...', files: ['images/рилсы/кизару1.png', 'images/рилсы/кизару2.mp4', 'images/рилсы/кизару3.png'], count: 3, ratio: 0.5625 },
+                { title: '2People.media', sub: 'Я придумывала шутки...', files: ['images/рилсы/перерыв1.png', 'images/рилсы/перерыв2.mp4', 'images/рилсы/перерыв3.png'], count: 3, ratio: 0.5625 },
+                { title: '2People Media', base: 'images/lp', ext: '.png', start: 0, count: 10, ratio: 1 },
+                { title: '2People.it', base: 'images/b2b', ext: '.png', start: 0, count: 7, ratio: 1 },
+                { title: 'Travel Dealer', base: 'images/td', ext: '.png', start: 0, count: 5, ratio: 1 }
+            ];
+
+            const fileList = (p) => p.files || Array.from({ length: p.count }, (_, k) => {
+                const i = p.start + k;
+                return p.video && p.video.includes(i) ? `${p.base}${i}.mp4` : `${p.base}${i}${p.ext}`;
+            });
+
+            const isVideo = (src) => /\.(mp4|mov|webm)$/i.test(src);
+
+            const isMobile = window.innerWidth <= 768;
+            const THUMB_W = isMobile ? 110 : 160;
+            const GAP = 5;
+            const section = document.querySelector('.floating-section');
+            const layer = document.querySelector('.float-layer');
+            const preview = document.querySelector('.preview');
+            const box = document.querySelector('.preview-box');
+            const viewport = document.querySelector('.preview-viewport');
+            const slider = document.querySelector('.preview-slider');
+            const titleEl = document.querySelector('.preview-title');
+            const subEl = document.querySelector('.preview-sub');
+            const counterEl = document.querySelector('.preview-counter');
+            const prevBtn = document.querySelector('.preview-nav.prev');
+            const nextBtn = document.querySelector('.preview-nav.next');
+
+            let openIndex = -1;
+            let slideIndex = 0;
+            let wheelLock = false;
+
+            /* --- ЛЕТАЮЩИЕ МИНИАТЮРЫ --- */
+            const items = projects.map((p, index) => {
+                const el = document.createElement('div');
+                const h = THUMB_W / p.ratio;
+                el.className = 'float-item';
+                el.style.width = THUMB_W + 'px';
+                el.style.height = h + 'px';
+
+                const cover = fileList(p)[0];
+                if (isVideo(cover)) {
+                    const video = document.createElement('video');
+                    video.src = `${cover}#t=0.1`;
+                    video.preload = 'metadata';
+                    video.muted = true;
+                    video.playsInline = true;
+                    el.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = cover;
+                    img.alt = '';
+                    el.appendChild(img);
+                }
+                layer.appendChild(el);
+
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 25 + Math.random() * 25;
+                const item = {
+                    el,
+                    h,
+                    index,
+                    x: Math.random() * Math.max(0, section.clientWidth - THUMB_W),
+                    y: Math.random() * Math.max(0, section.clientHeight - h),
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed
+                };
+
+                el.addEventListener('click', () => openProject(index));
+
+                return item;
+            });
+
+            let lastTime = performance.now();
+            const moveItems = (time) => {
+                const delta = Math.min((time - lastTime) / 1000, 0.05);
+                lastTime = time;
+                const W = section.clientWidth;
+                const H = section.clientHeight;
+
+                items.forEach(item => {
+                    item.x += item.vx * delta;
+                    item.y += item.vy * delta;
+
+                    const maxX = Math.max(0, W - THUMB_W);
+                    const maxY = Math.max(0, H - item.h);
+
+                    if (item.x < 0) { item.x = 0; item.vx = Math.abs(item.vx); }
+                    if (item.x > maxX) { item.x = maxX; item.vx = -Math.abs(item.vx); }
+                    if (item.y < 0) { item.y = 0; item.vy = Math.abs(item.vy); }
+                    if (item.y > maxY) { item.y = maxY; item.vy = -Math.abs(item.vy); }
+
+                    item.el.style.transform = `translate(${item.x}px, ${item.y}px)`;
+                });
+
+                requestAnimationFrame(moveItems);
+            };
+
+            /* --- ПРОСМОТР КАРУСЕЛИ --- */
+            const updateSlider = () => {
+                const p = projects[openIndex];
+                slider.style.transform = `translateX(calc(${-slideIndex} * (100% + ${GAP}px)))`;
+                counterEl.textContent = `${slideIndex + 1} / ${p.count}`;
+                Array.from(slider.children).forEach((el, i) => {
+                    if (el.tagName !== 'VIDEO') return;
+                    if (i === slideIndex) {
+                        el.play().catch(() => {});
+                    } else {
+                        el.pause();
+                        el.currentTime = 0;
+                    }
+                });
+            };
+
+            const buildSlides = (p) => {
+                slider.innerHTML = '';
+                fileList(p).forEach(src => {
+                    if (isVideo(src)) {
+                        const video = document.createElement('video');
+                        video.src = src;
+                        video.loop = true;
+                        video.playsInline = true;
+                        slider.appendChild(video);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = '';
+                        slider.appendChild(img);
+                    }
+                });
+            };
+
+            const sizeViewport = (p) => {
+                const maxW = window.innerWidth * (window.innerWidth <= 768 ? 0.86 : 0.7);
+                const maxH = window.innerHeight * 0.75;
+                let h = maxH;
+                let w = h * p.ratio;
+                if (w > maxW) {
+                    w = maxW;
+                    h = w / p.ratio;
+                }
+                viewport.style.width = w + 'px';
+                viewport.style.height = h + 'px';
+            };
+
+            const openProject = (index) => {
+                const p = projects[index];
+                if (openIndex !== index) {
+                    openIndex = index;
+                    slideIndex = 0;
+                    buildSlides(p);
+                    slider.style.transition = 'none';
+                    updateSlider();
+                    slider.offsetHeight;
+                    slider.style.transition = '';
+                }
+                titleEl.textContent = p.title;
+                subEl.textContent = p.sub || '';
+                sizeViewport(p);
+                updateSlider();
+                preview.classList.add('open');
+            };
+
+            const closePreview = () => {
+                slider.querySelectorAll('video').forEach(v => v.pause());
+                preview.classList.remove('open');
+                openIndex = -1;
+            };
+
+            const next = () => {
+                if (openIndex < 0) return;
+                slideIndex = (slideIndex + 1) % projects[openIndex].count;
+                updateSlider();
+            };
+
+            const prev = () => {
+                if (openIndex < 0) return;
+                const count = projects[openIndex].count;
+                slideIndex = (slideIndex - 1 + count) % count;
+                updateSlider();
+            };
+
+            document.addEventListener('click', (e) => {
+                if (openIndex < 0) return;
+                if (box.contains(e.target) || e.target.closest('.float-item')) return;
+                closePreview();
+            });
+
+            nextBtn.addEventListener('click', next);
+            prevBtn.addEventListener('click', prev);
+
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (wheelLock) return;
+                const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (Math.abs(delta) < 5) return;
+                delta > 0 ? next() : prev();
+                wheelLock = true;
+                setTimeout(() => { wheelLock = false; }, 350);
+            }, { passive: false });
+
+            document.addEventListener('keydown', (e) => {
+                if (openIndex < 0) return;
+                if (e.key === 'ArrowRight') next();
+                if (e.key === 'ArrowLeft') prev();
+                if (e.key === 'Escape') closePreview();
+            });
+
+            requestAnimationFrame(moveItems);
+        });
+    </script>
+
+</body>
+</html>
